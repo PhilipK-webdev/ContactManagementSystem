@@ -1,12 +1,12 @@
-const express = require("express");
+import express from "express";
+import db from "./models";
+import api from "./api/routes";
 const app = express();
-const db = require("./models");
 const PORT = process.env.PORT || 5000;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-const apiRoutes = require("./api/routes");
-app.use("/api", apiRoutes);
+app.use("/api", api);
 db.sequelize
   .sync()
   .then(function () {
@@ -14,4 +14,4 @@ db.sequelize
       console.log(`App listening at http://localhost:${PORT}`);
     });
   })
-  .catch((err) => console.log(err));
+  .catch((err: any) => console.log(err));

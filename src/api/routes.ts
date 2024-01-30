@@ -1,7 +1,9 @@
-const express = require("express");
+import express, { Request, Response } from "express";
+import db from "../models";
+
 const router = express.Router();
-const db = require("../models");
-router.get("/contacts", async (req, res) => {
+
+router.get("/contacts", async (req: Request, res: Response) => {
   try {
     const contacts = await db.User.findAll();
     res.json(contacts);
@@ -10,7 +12,8 @@ router.get("/contacts", async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
-router.post("/create", async (req, res) => {
+
+router.post("/create", async (req: Request, res: Response) => {
   try {
     const {
       firstname,
@@ -22,7 +25,8 @@ router.post("/create", async (req, res) => {
       phone,
       email,
     } = req.body;
-    db.User.create({
+
+    await db.User.create({
       firstname,
       lastname,
       country,
@@ -32,6 +36,7 @@ router.post("/create", async (req, res) => {
       phone,
       email,
     });
+
     res.json({ message: "Done" });
   } catch (error) {
     console.error("CREATE route - Error:", error);
@@ -39,38 +44,42 @@ router.post("/create", async (req, res) => {
   }
 });
 
-router.put("/edit", async (req, res) => {
+router.put("/edit", async (req: Request, res: Response) => {
   try {
-    const { country, id } = req.body;
+    const { id, ...data } = req.body;
     await db.User.update(
       {
-        country,
+        ...data,
       },
       {
         where: {
-          id,
+          id: id,
         },
       }
     );
+
     res.json({ message: "EDIT" });
   } catch (error) {
     console.error("EDIT route - Error:", error);
     res.status(500).send("Internal Server Error");
   }
 });
-router.delete("/delete/:id", async (req, res) => {
+
+router.delete("/delete/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+
     await db.User.destroy({
       where: {
         id,
       },
     });
+
     res.json({ message: "DELETED" });
   } catch (error) {
-    console.error("DELET route - Error:", error);
+    console.error("DELETE route - Error:", error);
     res.status(500).send("Internal Server Error");
   }
 });
 
-module.exports = router;
+export = router;
