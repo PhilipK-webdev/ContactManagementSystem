@@ -1,6 +1,4 @@
 import styled from "styled-components";
-const TITLE = "Created by:";
-const SUB_TITLE = "Non Profit Organization";
 const Footer = () => {
   return (
     <FooterStyle>
