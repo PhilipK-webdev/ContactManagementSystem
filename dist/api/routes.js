@@ -48,7 +48,7 @@ router.post("/create", (req, res) => __awaiter(void 0, void 0, void 0, function*
             phone,
             email,
         });
-        res.json({ message: "Done" });
+        res.sendStatus(200);
     }
     catch (error) {
         console.error("CREATE route - Error:", error);
@@ -58,12 +58,17 @@ router.post("/create", (req, res) => __awaiter(void 0, void 0, void 0, function*
 router.put("/edit", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const _a = req.body, { id } = _a, data = __rest(_a, ["id"]);
+        const contacts = yield models_1.default.User.findAll();
+        const contactExists = contacts.some((contact) => contact.id === id);
+        if (!contactExists) {
+            return res.status(400).send("invalid user id");
+        }
         yield models_1.default.User.update(Object.assign({}, data), {
             where: {
                 id: id,
             },
         });
-        res.json({ message: "EDIT" });
+        res.sendStatus(200);
     }
     catch (error) {
         console.error("EDIT route - Error:", error);
@@ -73,12 +78,17 @@ router.put("/edit", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 router.delete("/delete/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
+        const contacts = yield models_1.default.User.findAll();
+        const contactExists = contacts.some((contact) => contact.id === id);
+        if (!contactExists) {
+            return res.status(400).send("Id not found");
+        }
         yield models_1.default.User.destroy({
             where: {
                 id,
             },
         });
-        res.json({ message: "DELETED" });
+        res.sendStatus(200);
     }
     catch (error) {
         console.error("DELETE route - Error:", error);
