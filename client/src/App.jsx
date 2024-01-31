@@ -1,16 +1,22 @@
-import "./App.css";
-import FilteringTable from "./components/FilteringTable";
-// import SortingTable from "./components/SortingTable";
-// import BasicTable from "./components/BasicTable";
-
+import { PanelManagementPage } from "./components/PanelManagementPage";
+import GlobalStyles from "./style/globalStyle";
+import styled from "styled-components";
 function App() {
   return (
-    <div>
-      {/* <BasicTable /> */}
-      {/* <SortingTable /> */}
-      <FilteringTable />
-    </div>
+    <>
+      <GlobalStyles />
+      <AppContainer>
+        <PanelManagementPage />
+      </AppContainer>
+    </>
   );
 }
+
+const AppContainer = styled.main`
+  display: flex;
+  padding: 10px;
+  flex-direction: column;
+  height: 100vh;
+`;
 
 export default App;
