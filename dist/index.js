@@ -19,3 +19,5 @@ models_1.default.sequelize
     });
 })
     .catch((err) => console.log(err));
+exports.default = app;
+//# sourceMappingURL=index.js.map

@@ -15,3 +15,5 @@ db.sequelize
     });
   })
   .catch((err: any) => console.log(err));
+
+export default app;

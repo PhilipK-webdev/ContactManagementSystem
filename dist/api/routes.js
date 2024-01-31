@@ -96,3 +96,4 @@ router.delete("/delete/:id", (req, res) => __awaiter(void 0, void 0, void 0, fun
     }
 }));
 module.exports = router;
+//# sourceMappingURL=routes.js.map

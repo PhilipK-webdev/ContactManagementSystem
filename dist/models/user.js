@@ -80,3 +80,4 @@ module.exports = (sequelize, DataTypes) => {
     });
     return User;
 };
+//# sourceMappingURL=user.js.map

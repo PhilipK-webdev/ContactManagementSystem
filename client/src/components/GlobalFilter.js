@@ -22,16 +22,18 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-const dotenv = __importStar(require("dotenv"));
-dotenv.config();
-const config = {
-    development: {
-        username: process.env.DB_USERNAME || "",
-        password: process.env.DB_PASSWORD || "",
-        database: process.env.DB_DATABASE || "",
-        host: process.env.DB_HOST || "",
-        dialect: "mssql",
-    },
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importStar(require("react"));
+const react_table_1 = require("react-table");
+const GlobalFilter = ({ filter, setFilter }) => {
+    const [value, setValue] = (0, react_1.useState)(filter);
+    const onChange = (0, react_table_1.useAsyncDebounce)((value) => setFilter(value || undefined), 1000);
+    return (<span>
+      Search: {""}
+      <input value={value || ""} onChange={(e) => {
+            setValue(e.target.value);
+            onChange(e.target.value);
+        }}/>
+    </span>);
 };
-module.exports = config;
-//# sourceMappingURL=config.js.map
+exports.default = GlobalFilter;
