@@ -44,10 +44,13 @@ const ContacDashboardCard = styled.div`
     margin-left: 12px;
     color: #265fa9;
     text-decoration: underline;
+    height: 50px;
   }
   .toggle {
-    margin-bottom: ${(props) => (props.toggle ? "0" : "20px")};
+    margin-bottom: 20px;
     width: 10%;
+    margin-left: 0;
+    margin-right: 0;
   }
 `;
 
