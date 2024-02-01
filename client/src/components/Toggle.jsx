@@ -1,20 +1,25 @@
+import { useRef, useEffect, forwardRef } from "react";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
-const Toggle = ({ checked, setChecked }) => {
+// eslint-disable-next-line react/display-name
+const Toggle = forwardRef(({ indeterminate, ...rest }, ref) => {
+  const defaultRef = useRef();
+  const resolvedRef = ref || defaultRef;
+  useEffect(() => {
+    resolvedRef.current.indeterminate = indeterminate;
+  }, [resolvedRef, indeterminate]);
+
   return (
     <FormGroup>
-      <div>
-        <h4>Create New Contact</h4>
+      <div style={{ marginLeft: "auto", marginRight: "auto" }}>
         <FormControlLabel
           className="toggle"
-          control={
-            <Switch checked={checked} onChange={() => setChecked(!checked)} />
-          }
+          control={<Switch {...rest} ref={resolvedRef} />}
         />
       </div>
     </FormGroup>
   );
-};
+});
 
 export default Toggle;

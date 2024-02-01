@@ -117,13 +117,22 @@ const Form = () => {
           </Grid>
           <Grid item xs={12}>
             <Button
-              style={{ width: "100%" }}
+              className="submit_form"
+              style={{
+                width: "100%",
+                height: `${mobile ? "20px" : "28px"}`,
+                color: "white",
+                fontSize: `${mobile ? "10px" : "18px"}`,
+                fontFamily: "Roboto Flex, sans-serif",
+                textTransform: "none",
+                letterSpacing: "1.2px",
+              }}
               variant="contained"
               size="large"
               // onClick={handleSubmit}
               color="primary"
             >
-              Submit
+              Submit Form
             </Button>
           </Grid>
         </Grid>
@@ -136,6 +145,8 @@ const FormControlStyle = styled.div`
   padding: 10px;
   display: flex;
   justify-content: center;
+  font-family: "Roboto Flex";
+  font-weight: 500;
   .MuiFormControl-root {
     flex-direction: row;
     align-items: start;
@@ -157,6 +168,15 @@ const FormControlStyle = styled.div`
   .css-k4qjio-MuiFormHelperText-root.Mui-error {
     position: absolute;
     top: 36px;
+  }
+  .submit_form {
+    width: 100%;
+    height: ${(props) => (props.mobile ? "20px" : "28px")};
+    color: white;
+    fontsize: ${(props) => (props.mobile ? "10px" : "18px")};
+    fontfamily: "Roboto Flex, sans-serif";
+    texttransform: none;
+    letterspacing: 1.2px;
   }
 `;
 export default Form;

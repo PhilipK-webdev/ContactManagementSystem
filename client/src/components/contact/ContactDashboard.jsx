@@ -1,18 +1,37 @@
-import React, { useState } from "react";
 import styled from "styled-components";
 import Form from "./Form";
-import Toggle from "../Toggle";
-import BasicTable from "../BasicTable";
-import { useMediaQuery } from "@mui/material";
+import RowSelection from "../RowSelection";
+import { useMediaQuery, Button } from "@mui/material";
 const ContactDashboard = () => {
-  const [checked, setToggleEditOrCreateUser] = useState(false);
   const mobile = useMediaQuery("(max-width:1020px)");
   return (
     <ContactDashboardStyle>
-      <ContacDashboardCard toggle={checked ? 1 : 0} mobile={mobile ? 1 : 0}>
-        <Toggle checked={checked} setChecked={setToggleEditOrCreateUser} />
-        <FormStyle toggle={checked ? 1 : 0}>{checked && <Form />}</FormStyle>
-        <TableStyle>{/* <BasicTable /> */}</TableStyle>
+      <ContacDashboardCard mobile={mobile ? 1 : 0}>
+        <div className="dashboard_header">
+          {" "}
+          <h4>Create new contact</h4>
+          <Button
+            variant="contained"
+            size="small"
+            style={{
+              height: `${mobile ? "20px" : "28px"}`,
+              backgroundColor: "#010101",
+              color: "white",
+              fontSize: `${mobile ? "10px" : "13px"}`,
+              fontFamily: "Roboto Flex, sans-serif",
+              textTransform: "none",
+            }}
+            // onClick={handleSubmit}
+          >
+            Export to CSV
+          </Button>
+        </div>
+        <FormStyle>
+          <Form />
+        </FormStyle>
+        <TableStyle>
+          <RowSelection />
+        </TableStyle>
       </ContacDashboardCard>
     </ContactDashboardStyle>
   );
@@ -24,10 +43,12 @@ const ContactDashboardStyle = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  font-family: "Roboto Flex";
+  font-weight: 500;
 `;
 
 const ContacDashboardCard = styled.div`
-  height: 95%;
+  height: ${(props) => (props.mobile ? "99%" : "95%")};
   width: 80%;
   background: #ffffff;
   border-radius: 10px;
@@ -45,26 +66,56 @@ const ContacDashboardCard = styled.div`
     color: #265fa9;
     text-decoration: underline;
     height: 50px;
+    @media (max-width: 820px) {
+      font-size: 15px;
+    }
   }
   .toggle {
-    margin-bottom: 20px;
-    width: 10%;
     margin-left: 0;
     margin-right: 0;
+  }
+  .dashboard_header {
+    display: flex;
+    justify-content: space-between;
   }
 `;
 
 const FormStyle = styled.div`
   width: 100%;
-  display: ${(props) => (props.toggle ? "flex" : "none")};
+  display: flex;
   margin-bottom: 10px;
   flex-direction: column;
-  justify-content: ${(props) => (props.toggle ? "center" : "start")};
+  justify-content: start;
 `;
 const TableStyle = styled.div`
   flex: 1;
   width: 100%;
-  border: 1px solid red;
   display: flex;
+  table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  td,
+  th {
+    border: 1px solid #dddddd;
+    text-align: center;
+    padding: 8px;
+  }
+
+  th,
+  td {
+    border-collapse: collapse;
+    font-family: "Roboto Flex";
+    font-weight: 500;
+  }
+  table th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: center;
+    background-color: #265fa9;
+    color: white;
+  }
 `;
 export default ContactDashboard;

@@ -106,8 +106,9 @@ router.delete(
     try {
       const { id } = req.params;
       const contacts = await db.User.findAll();
+      console.log(typeof id);
       const contactExists = contacts.some(
-        (contact: { id: string }) => contact.id === id
+        (contact: { id: string }) => contact.id == id
       );
       if (!contactExists) {
         return res.status(400).send("Id not found");

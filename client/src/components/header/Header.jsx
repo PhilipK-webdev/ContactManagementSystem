@@ -17,6 +17,9 @@ const HeaderStyle = styled.header`
   align-items: center;
   h1 {
     color: #265fa9;
+    @media (max-width: 820px) {
+      font-size: 20px;
+    }
   }
 `;
 export default Header;
