@@ -80,9 +80,6 @@ module.exports = (sequelize: any, DataTypes: any) => {
       phone: {
         type: DataTypes.STRING,
         allowNull: false,
-        validate: {
-          is: /^(?:\+972|0)([23489]|5[0248]|77)[0-9]{7}$/,
-        },
       },
       email: {
         type: DataTypes.STRING,

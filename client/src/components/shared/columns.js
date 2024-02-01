@@ -1,4 +1,4 @@
-import { formatFirstLetterToUpperCase } from "../utils/index";
+import { formatFirstLetterToUpperCase } from "../../utils/index";
 import ColumnFilter from "./ColumnFilter";
 
 export const COLUMNS = [
@@ -60,33 +60,5 @@ export const COLUMNS = [
     accessor: "email",
     disableFilters: true,
     disableSortBy: true,
-  },
-];
-
-export const GROUPED_COLUMNS = [
-  {
-    Header: "Id",
-    Footer: "Id",
-    accessor: "id",
-  },
-  {
-    Header: "Name",
-    Footer: "Name",
-    columns: [
-      { Header: "First Name", Footer: "First Name", accessor: "firstname" },
-      { Header: "Last Name", Footer: "Last Name", accessor: "lastname" },
-    ],
-  },
-  {
-    Header: "Info",
-    Footer: "Info",
-    columns: [
-      { Header: "Country", Footer: "Country", accessor: "country" },
-      { Header: "City", Footer: "City", accessor: "city" },
-      { Header: "Street", Footer: "Street", accessor: "street" },
-      { Header: "Zip Code", Footer: "Zip Code", accessor: "zipcode" },
-      { Header: "Phone Number", Footer: "Phone Number", accessor: "phone" },
-      { Header: "Email", Footer: "Email", accessor: "email" },
-    ],
   },
 ];

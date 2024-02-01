@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import {
   Button,
   FormControl,
@@ -7,8 +6,14 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import styled from "styled-components";
-const Form = () => {
-  const [firstName, setFirstName] = useState("");
+import Spinner from "../shared/Spinner";
+const Form = ({
+  contactData,
+  errors,
+  handleInputChange,
+  handleSubmitForm,
+  isSubmitForm,
+}) => {
   const mobile = useMediaQuery("(max-width:1020px)");
   return (
     <FormControlStyle mobile={mobile ? 1 : 0}>
@@ -18,13 +23,13 @@ const Form = () => {
             <TextField
               label="First Name"
               id="outlined-size-small"
-              value={firstName}
+              value={contactData?.firstName}
               variant="outlined"
               size="small"
               name="firstName"
-              onChange={(e) => setFirstName(e.target.value)}
-              helperText={firstName}
-              error={firstName ? true : false}
+              onChange={handleInputChange}
+              helperText={errors?.firstName}
+              error={errors?.firstName ? true : false}
               InputLabelProps={{
                 style: { fontSize: "14px" },
               }}
@@ -34,30 +39,30 @@ const Form = () => {
             <TextField
               label="Last Name"
               id="outlined-size-small"
-              // value={lastName}
+              value={contactData?.lastName}
               size="small"
               name="lastName"
               InputLabelProps={{
                 style: { fontSize: "14px" },
               }}
-              // onChange={handleChange}
-              // helperText={errorLastName}
-              // error={errorLastName ? true : false}
+              onChange={handleInputChange}
+              helperText={errors?.lastName}
+              error={errors?.lastName ? true : false}
             />
           </Grid>
           <Grid item xs={mobile ? 6 : 2} md={4} lg={2}>
             <TextField
               label="Country"
               id="outlined-size-small"
-              // value={email}
+              value={contactData?.country}
               size="small"
-              name="email"
+              name="country"
               InputLabelProps={{
                 style: { fontSize: "14px" },
               }}
-              // onChange={handleChange}
-              // helperText={errorEmail}
-              // error={errorEmail ? true : false}
+              onChange={handleInputChange}
+              helperText={errors?.country}
+              error={errors?.country ? true : false}
             />
           </Grid>
 
@@ -65,61 +70,61 @@ const Form = () => {
             <TextField
               label="City"
               id="outlined-size-small"
-              // value={lastName}
+              value={contactData?.city}
               size="small"
-              name="lastName"
+              name="city"
               InputLabelProps={{
                 style: { fontSize: "14px" },
               }}
-              // onChange={handleChange}
-              // helperText={errorLastName}
-              // error={errorLastName ? true : false}
+              onChange={handleInputChange}
+              helperText={errors?.city}
+              error={errors?.city ? true : false}
             />
           </Grid>
           <Grid item xs={mobile ? 6 : 2} md={4} lg={2}>
             <TextField
               label="Street"
               id="outlined-size-small"
-              // value={lastName}
+              value={contactData?.street}
               size="small"
-              name="lastName"
+              name="street"
               InputLabelProps={{
                 style: { fontSize: "14px" },
               }}
-              // onChange={handleChange}
-              // helperText={errorLastName}
-              // error={errorLastName ? true : false}
+              onChange={handleInputChange}
+              helperText={errors?.street}
+              error={errors?.street ? true : false}
             />
           </Grid>
           <Grid item xs={mobile ? 6 : 2} md={4} lg={2}>
             <TextField
               label="Zip Code"
               id="outlined-size-small"
-              // value={lastName}
+              value={contactData?.zipCode}
               size="small"
-              name="lastName"
+              name="zipCode"
               InputLabelProps={{
                 style: { fontSize: "14px" },
               }}
-              // onChange={handleChange}
-              // helperText={errorLastName}
-              // error={errorLastName ? true : false}
+              onChange={handleInputChange}
+              helperText={errors?.zipCode}
+              error={errors?.zipCode ? true : false}
             />
           </Grid>
           <Grid item xs={6} md={4} lg={6}>
             <TextField
               label="Email"
               id="outlined-size-small"
-              // value={lastName}
+              value={contactData?.email}
               size="small"
-              name="lastName"
+              name="email"
               fullWidth={!mobile}
               InputLabelProps={{
                 style: { fontSize: "14px" },
               }}
-              // onChange={handleChange}
-              // helperText={errorLastName}
-              // error={errorLastName ? true : false}
+              onChange={handleInputChange}
+              helperText={errors?.email}
+              error={errors?.email ? true : false}
             />
           </Grid>
           <Grid item xs={6} md={4} lg={6}>
@@ -130,25 +135,33 @@ const Form = () => {
               InputLabelProps={{
                 style: { fontSize: "14px" },
               }}
-              // value={lastName}
+              value={contactData?.phone}
               size="small"
-              name="lastName"
-              // onChange={handleChange}
-              // helperText={errorLastName}
-              // error={errorLastName ? true : false}
+              name="phone"
+              onChange={handleInputChange}
+              helperText={errors?.phone}
+              error={errors?.phone ? true : false}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={3} md={3} lg={3}></Grid>
+          <Grid item xs={6} md={6} lg={6}>
             <Button
               className="submit_form"
               variant="contained"
               size="large"
-              // onClick={handleSubmit}
-              color="primary"
+              onClick={handleSubmitForm}
+              color="secondary"
             >
-              Submit Form
+              {isSubmitForm ? (
+                <span style={{ marginLeft: "10px" }}>
+                  <Spinner size={20} color={"white"} />
+                </span>
+              ) : (
+                "Submit Form"
+              )}
             </Button>
           </Grid>
+          <Grid item xs={3} md={3} lg={3}></Grid>
         </Grid>
       </FormControl>
     </FormControlStyle>
@@ -171,25 +184,25 @@ const FormControlStyle = styled.div`
       margin-top: 0;
     }
   }
-  .MuiButtonBase-root {
-    height: 39px;
-    margin-top: 10px;
-    background: #265fa9;
-    &:hover {
-      background: #265fa9;
-    }
-  }
+
   .css-k4qjio-MuiFormHelperText-root.Mui-error {
     position: absolute;
     top: 36px;
   }
   .submit_form {
     width: 100%;
-    height: ${(props) => (props.mobile ? "20px" : "32px")};
-    color: white;
-    font-size: ${(props) => (props.mobile ? "10px" : "18px")};
+    height: ${(props) => (props.mobile ? "28px" : "32px")};
+    font-size: ${(props) => (props.mobile ? "15px" : "17px")};
     font-family: "Roboto Flex", sans-serif;
     text-transform: none;
+    display: flex;
+    justify-content: center;
+    color: white;
+    margin-top: 10px;
+    background-color: #626262;
+    &:hover {
+      background-color: #081c3c;
+    }
   }
 `;
 export default Form;
