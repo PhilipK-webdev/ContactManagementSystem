@@ -12,15 +12,7 @@ const ContactDashboard = () => {
           <h4>Create new contact</h4>
           <Button
             variant="contained"
-            size="small"
-            style={{
-              height: `${mobile ? "20px" : "28px"}`,
-              backgroundColor: "#010101",
-              color: "white",
-              fontSize: `${mobile ? "10px" : "13px"}`,
-              fontFamily: "Roboto Flex, sans-serif",
-              textTransform: "none",
-            }}
+            className="export_csv"
             // onClick={handleSubmit}
           >
             Export to CSV
@@ -48,7 +40,7 @@ const ContactDashboardStyle = styled.div`
 `;
 
 const ContacDashboardCard = styled.div`
-  height: ${(props) => (props.mobile ? "99%" : "95%")};
+  height: 99%;
   width: 80%;
   background: #ffffff;
   border-radius: 10px;
@@ -77,6 +69,14 @@ const ContacDashboardCard = styled.div`
   .dashboard_header {
     display: flex;
     justify-content: space-between;
+  }
+  .export_csv {
+    height: ${(props) => (props.mobile ? "20px" : "28px")};
+    background-color: #010101;
+    color: white;
+    font-size: ${(props) => (props.mobile ? "10px" : "13px")};
+    font-family: "Roboto Flex", sans-serif;
+    text-transform: none;
   }
 `;
 

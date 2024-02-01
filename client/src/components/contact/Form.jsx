@@ -16,7 +16,6 @@ const Form = () => {
         <Grid container direction={"row"} spacing={2}>
           <Grid item xs={mobile ? 6 : 2} md={4} lg={2}>
             <TextField
-              style={{ width: "100%" }}
               label="First Name"
               id="outlined-size-small"
               value={firstName}
@@ -26,6 +25,9 @@ const Form = () => {
               onChange={(e) => setFirstName(e.target.value)}
               helperText={firstName}
               error={firstName ? true : false}
+              InputLabelProps={{
+                style: { fontSize: "14px" },
+              }}
             />
           </Grid>
           <Grid item xs={mobile ? 6 : 2} md={4} lg={2}>
@@ -35,6 +37,9 @@ const Form = () => {
               // value={lastName}
               size="small"
               name="lastName"
+              InputLabelProps={{
+                style: { fontSize: "14px" },
+              }}
               // onChange={handleChange}
               // helperText={errorLastName}
               // error={errorLastName ? true : false}
@@ -42,11 +47,14 @@ const Form = () => {
           </Grid>
           <Grid item xs={mobile ? 6 : 2} md={4} lg={2}>
             <TextField
-              label="Email"
+              label="Country"
               id="outlined-size-small"
               // value={email}
               size="small"
               name="email"
+              InputLabelProps={{
+                style: { fontSize: "14px" },
+              }}
               // onChange={handleChange}
               // helperText={errorEmail}
               // error={errorEmail ? true : false}
@@ -55,11 +63,14 @@ const Form = () => {
 
           <Grid item xs={mobile ? 6 : 2} md={4} lg={2}>
             <TextField
-              label="Country"
+              label="City"
               id="outlined-size-small"
               // value={lastName}
               size="small"
               name="lastName"
+              InputLabelProps={{
+                style: { fontSize: "14px" },
+              }}
               // onChange={handleChange}
               // helperText={errorLastName}
               // error={errorLastName ? true : false}
@@ -72,6 +83,9 @@ const Form = () => {
               // value={lastName}
               size="small"
               name="lastName"
+              InputLabelProps={{
+                style: { fontSize: "14px" },
+              }}
               // onChange={handleChange}
               // helperText={errorLastName}
               // error={errorLastName ? true : false}
@@ -79,11 +93,14 @@ const Form = () => {
           </Grid>
           <Grid item xs={mobile ? 6 : 2} md={4} lg={2}>
             <TextField
-              label="Street"
+              label="Zip Code"
               id="outlined-size-small"
               // value={lastName}
               size="small"
               name="lastName"
+              InputLabelProps={{
+                style: { fontSize: "14px" },
+              }}
               // onChange={handleChange}
               // helperText={errorLastName}
               // error={errorLastName ? true : false}
@@ -91,12 +108,15 @@ const Form = () => {
           </Grid>
           <Grid item xs={6} md={4} lg={6}>
             <TextField
-              label="Zip Code"
+              label="Email"
               id="outlined-size-small"
               // value={lastName}
               size="small"
               name="lastName"
               fullWidth={!mobile}
+              InputLabelProps={{
+                style: { fontSize: "14px" },
+              }}
               // onChange={handleChange}
               // helperText={errorLastName}
               // error={errorLastName ? true : false}
@@ -107,6 +127,9 @@ const Form = () => {
               label="Phone"
               id="outlined-size-small"
               fullWidth={!mobile}
+              InputLabelProps={{
+                style: { fontSize: "14px" },
+              }}
               // value={lastName}
               size="small"
               name="lastName"
@@ -118,15 +141,6 @@ const Form = () => {
           <Grid item xs={12}>
             <Button
               className="submit_form"
-              style={{
-                width: "100%",
-                height: `${mobile ? "20px" : "28px"}`,
-                color: "white",
-                fontSize: `${mobile ? "10px" : "18px"}`,
-                fontFamily: "Roboto Flex, sans-serif",
-                textTransform: "none",
-                letterSpacing: "1.2px",
-              }}
               variant="contained"
               size="large"
               // onClick={handleSubmit}
@@ -171,12 +185,11 @@ const FormControlStyle = styled.div`
   }
   .submit_form {
     width: 100%;
-    height: ${(props) => (props.mobile ? "20px" : "28px")};
+    height: ${(props) => (props.mobile ? "20px" : "32px")};
     color: white;
-    fontsize: ${(props) => (props.mobile ? "10px" : "18px")};
-    fontfamily: "Roboto Flex, sans-serif";
-    texttransform: none;
-    letterspacing: 1.2px;
+    font-size: ${(props) => (props.mobile ? "10px" : "18px")};
+    font-family: "Roboto Flex", sans-serif;
+    text-transform: none;
   }
 `;
 export default Form;

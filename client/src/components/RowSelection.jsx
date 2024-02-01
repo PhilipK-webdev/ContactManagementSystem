@@ -1,5 +1,11 @@
 import { useEffect, useState, useMemo } from "react";
-import { useTable, useRowSelect, usePagination } from "react-table";
+import {
+  useTable,
+  useRowSelect,
+  usePagination,
+  useFilters,
+  useSortBy,
+} from "react-table";
 import { COLUMNS } from "./columns";
 import {
   Table,
@@ -11,6 +17,9 @@ import {
   Paper,
   Pagination,
 } from "@mui/material";
+import SwapVertIcon from "@mui/icons-material/SwapVert";
+import NorthIcon from "@mui/icons-material/North";
+import SouthIcon from "@mui/icons-material/South";
 import Toggle from "./Toggle";
 import styled from "styled-components";
 const RowSelection = () => {
@@ -20,33 +29,31 @@ const RowSelection = () => {
   const {
     getTableProps,
     getTableBodyProps,
-    rows,
     prepareRow,
     headerGroups,
-    selectedFlatRows,
-    footerGroups,
+
     page,
-    nextPage,
-    previousPage,
     canNextPage,
     canPreviousPage,
     pageOptions,
     state,
     gotoPage,
-    pageCount,
-    setPageSize,
   } = useTable(
     {
       columns,
       data,
       initialState: { pageSize: 5 },
     },
+
+    useFilters,
+    useSortBy,
     usePagination,
     useRowSelect,
     (hooks) => {
       hooks.visibleColumns.push((columns) => [
         {
           id: "selection",
+          disableFilters: true,
           // eslint-disable-next-line react/prop-types
           Cell: ({ row }) => <Toggle {...row.getToggleRowSelectedProps()} />,
         },
@@ -55,8 +62,6 @@ const RowSelection = () => {
     }
   );
 
-  const firestPageRows = rows.slice(0, 10);
-  const { pageIndex, pageSize } = state;
   useEffect(() => {
     const getAllContacts = async () => {
       try {
@@ -71,7 +76,7 @@ const RowSelection = () => {
     };
     getAllContacts();
   }, []);
-
+  const { pageIndex } = state;
   return (
     <LayoutTable>
       <TableContainer component={Paper}>
@@ -82,8 +87,56 @@ const RowSelection = () => {
               <TableRow {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column) => (
                   // eslint-disable-next-line react/jsx-key
-                  <TableCell {...column.getHeaderProps()}>
-                    {column.render("Header")}
+                  <TableCell>
+                    <div
+                      className={
+                        column.canSort
+                          ? column.Header === "First Name" ||
+                            column.Header === "Last Name"
+                            ? "head_cell_v1"
+                            : "head_cell_v2"
+                          : ""
+                      }
+                    >
+                      <div
+                        style={{
+                          textDecoration:
+                            column.id === "selection" ? "" : "underline",
+                        }}
+                      >
+                        {column.render("Header")}
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        {column.canFilter ? column.render("Filter") : null}
+                        <span>
+                          {column.canSort ? (
+                            <div
+                              onClick={(e) => {
+                                e.stopPropagation(); // Prevents sorting when clicking on the cell outside the icon
+                                column.getSortByToggleProps().onClick(e);
+                              }}
+                              style={{ cursor: "pointer" }}
+                            >
+                              {column.isSorted ? (
+                                column.isSortedDesc ? (
+                                  <SouthIcon
+                                    fontSize="small"
+                                    style={{ marginTop: "10px" }}
+                                  />
+                                ) : (
+                                  <NorthIcon
+                                    fontSize="small"
+                                    style={{ marginTop: "10px" }}
+                                  />
+                                )
+                              ) : (
+                                <SwapVertIcon style={{ marginTop: "10px" }} />
+                              )}
+                            </div>
+                          ) : null}
+                        </span>
+                      </div>
+                    </div>
                   </TableCell>
                 ))}
               </TableRow>
@@ -148,6 +201,21 @@ const LayoutTable = styled.div`
   .css-1h4i5l4-MuiButtonBase-root-MuiPaginationItem-root.Mui-selected {
     background: #265fa9;
     color: white;
+  }
+
+  .head_cell_v1 {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .head_cell_v2 {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+  }
+
+  .css-batk84-MuiInputBase-root-MuiFilledInput-root::before {
+    border-bottom: none;
   }
 `;
 export default RowSelection;

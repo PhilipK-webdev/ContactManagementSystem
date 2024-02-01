@@ -4,7 +4,6 @@ import ColumnFilter from "./ColumnFilter";
 export const COLUMNS = [
   {
     Header: "First Name",
-    Footer: "First Name",
     accessor: "firstname",
     Cell: ({ value }) => {
       return formatFirstLetterToUpperCase(value);
@@ -13,9 +12,7 @@ export const COLUMNS = [
   },
   {
     Header: "Last Name",
-    Footer: "Last Name",
     accessor: "lastname",
-    disableSortBy: true,
     Cell: ({ value }) => {
       return formatFirstLetterToUpperCase(value);
     },
@@ -23,7 +20,6 @@ export const COLUMNS = [
   },
   {
     Header: "Country",
-    Footer: "Country",
     accessor: "country",
     Cell: ({ value }) => {
       return formatFirstLetterToUpperCase(value);
@@ -32,7 +28,6 @@ export const COLUMNS = [
   },
   {
     Header: "City",
-    Footer: "City",
     accessor: "city",
     Cell: ({ value }) => {
       return formatFirstLetterToUpperCase(value);
@@ -41,30 +36,30 @@ export const COLUMNS = [
   },
   {
     Header: "Street",
-    Footer: "Street",
     accessor: "street",
     Cell: ({ value }) => {
       return formatFirstLetterToUpperCase(value);
     },
     disableFilters: true,
+    disableSortBy: true,
   },
   {
     Header: "Zip Code",
-    Footer: "Zip Code",
     accessor: "zipcode",
     disableFilters: true,
+    disableSortBy: true,
   },
   {
     Header: "Phone Number",
-    Footer: "Phone Number",
     accessor: "phone",
     disableFilters: true,
+    disableSortBy: true,
   },
   {
     Header: "Email",
-    Footer: "Email",
     accessor: "email",
     disableFilters: true,
+    disableSortBy: true,
   },
 ];
 
