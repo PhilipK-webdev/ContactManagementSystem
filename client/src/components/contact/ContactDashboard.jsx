@@ -11,6 +11,8 @@ import {
   validStreet,
 } from "../../utils/index.js";
 import AlertMessage from "../shared/AlertMessage.jsx";
+import { CSVLink } from "react-csv";
+
 const ContactDashboard = () => {
   const mobile = useMediaQuery("(max-width:1020px)");
   const [contacts, setContacts] = useState([]);
@@ -184,7 +186,6 @@ const ContactDashboard = () => {
   };
   const handleClickExportToCSV = () => {
     console.log("Export to CSV");
-    console.log(contacts);
   };
 
   const handleRemove = async (id) => {
@@ -225,6 +226,31 @@ const ContactDashboard = () => {
     setIsEditContactToggle(e.target.checked);
     setToggleId(id);
   };
+
+  const csvData = [
+    [
+      "First Name",
+      "Last Name",
+      "Country",
+      "City",
+      "Street",
+      "Zip Code",
+      "Phone Number",
+      "Email",
+    ],
+    ...contacts.map(
+      ({
+        firstname,
+        lastname,
+        country,
+        city,
+        street,
+        zipcode,
+        phone,
+        email,
+      }) => [firstname, lastname, country, city, street, zipcode, phone, email]
+    ),
+  ];
   return (
     <>
       <AlertMessage text={alertMessage.msg} color={alertMessage.color} />
@@ -238,7 +264,13 @@ const ContactDashboard = () => {
               className="export_csv"
               onClick={handleClickExportToCSV}
             >
-              Export to CSV
+              <CSVLink
+                className="downloadbtn"
+                filename="claims- conference.csv"
+                data={csvData}
+              >
+                Export to CSV
+              </CSVLink>
             </Button>
           </div>
           <FormStyle>
@@ -311,12 +343,15 @@ const ContacDashboardCard = styled.div`
   .export_csv {
     height: ${(props) => (props.mobile ? "20px" : "28px")};
     background-color: #010101;
-    color: white;
-    font-size: ${(props) => (props.mobile ? "10px" : "13px")};
-    font-family: "Roboto Flex", sans-serif;
-    text-transform: none;
     &:hover {
       background-color: #010101;
+    }
+    a {
+      color: white;
+      font-size: ${(props) => (props.mobile ? "10px" : "13px")};
+      font-family: "Roboto Flex", sans-serif;
+      text-transform: none;
+      text-decoration: none;
     }
   }
 `;

@@ -45,7 +45,6 @@ const ContactsTable = ({
     canPreviousPage,
     pageOptions,
     state,
-    resetSelectedRows,
     gotoPage,
     selectedFlatRows,
     getToggleAllRowsSelectedProps,
@@ -127,6 +126,7 @@ const ContactsTable = ({
   if (!isEditContactToggle) {
     handleResetSelectedRows();
   }
+
   return isLoading ? (
     <div style={{ margin: "auto" }}>
       <Spinner size={60} color={"#265FA9"} />
