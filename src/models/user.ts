@@ -58,11 +58,6 @@ module.exports = (sequelize: any, DataTypes: any) => {
       city: {
         type: DataTypes.STRING,
         allowNull: false,
-        validate: {
-          isAlpha: {
-            msg: "City should only contain letters.",
-          },
-        },
       },
       street: {
         type: DataTypes.STRING,

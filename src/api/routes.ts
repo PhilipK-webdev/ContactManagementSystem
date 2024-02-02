@@ -59,7 +59,7 @@ router.post(
       res.sendStatus(200);
     } catch (error) {
       console.error("CREATE route - Error:", error);
-      res.status(500).send("Internal Server Error");
+      res.status(500).json(error);
     }
   }
 );
@@ -117,8 +117,10 @@ router.delete(
           id,
         },
       });
-
-      res.sendStatus(200);
+      const filterArray = contacts.filter(
+        (contact: { id: string }) => contact.id != id
+      );
+      res.status(200).json(filterArray);
     } catch (error) {
       console.error("DELETE route - Error:", error);
       res.status(500).send("Internal Server Error");

@@ -23,13 +23,13 @@ const Form = ({
             <TextField
               label="First Name"
               id="outlined-size-small"
-              value={contactData?.firstName}
+              value={contactData?.firstname}
               variant="outlined"
               size="small"
-              name="firstName"
+              name="firstname"
               onChange={handleInputChange}
-              helperText={errors?.firstName}
-              error={errors?.firstName ? true : false}
+              helperText={errors?.firstname}
+              error={errors?.firstname ? true : false}
               InputLabelProps={{
                 style: { fontSize: "14px" },
               }}
@@ -41,7 +41,7 @@ const Form = ({
               id="outlined-size-small"
               value={contactData?.lastName}
               size="small"
-              name="lastName"
+              name="lastname"
               InputLabelProps={{
                 style: { fontSize: "14px" },
               }}
@@ -100,15 +100,15 @@ const Form = ({
             <TextField
               label="Zip Code"
               id="outlined-size-small"
-              value={contactData?.zipCode}
+              value={contactData?.zipcode}
               size="small"
-              name="zipCode"
+              name="zipcode"
               InputLabelProps={{
                 style: { fontSize: "14px" },
               }}
               onChange={handleInputChange}
-              helperText={errors?.zipCode}
-              error={errors?.zipCode ? true : false}
+              helperText={errors?.zipcode}
+              error={errors?.zipcode ? true : false}
             />
           </Grid>
           <Grid item xs={6} md={4} lg={6}>

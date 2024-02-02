@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import {
   useTable,
   useRowSelect,
@@ -28,7 +28,6 @@ const ContactsTable = ({ contacts, isLoading, handleRemove }) => {
   const data = useMemo(() => {
     return contacts;
   }, [contacts]);
-
   const {
     getTableProps,
     getTableBodyProps,
@@ -40,6 +39,7 @@ const ContactsTable = ({ contacts, isLoading, handleRemove }) => {
     pageOptions,
     state,
     gotoPage,
+    selectedFlatRows,
   } = useTable(
     {
       columns,
@@ -65,6 +65,7 @@ const ContactsTable = ({ contacts, isLoading, handleRemove }) => {
           disableFilters: true,
           disableSortBy: true,
           Cell: ({ row }) => {
+            console.log("id", row.cells[9].row.original.id);
             return (
               <RemoveContact
                 {...row.getToggleRowSelectedProps()}
@@ -94,7 +95,7 @@ const ContactsTable = ({ contacts, isLoading, handleRemove }) => {
           }}
         >
           <TableHead>
-            {headerGroups.map((headerGroup, index) => (
+            {headerGroups.map((headerGroup) => (
               <TableRow {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column) => (
                   <TableCell key={column.id}>

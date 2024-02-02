@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
 import Form from "./Form";
 import ContactsTable from "../contact/ContactsTable";
@@ -10,12 +10,17 @@ import {
   validPhoneNumber,
   validStreet,
 } from "../../utils/index.js";
+import AlertMessage from "../shared/AlertMessage.jsx";
 
 const ContactDashboard = () => {
   const mobile = useMediaQuery("(max-width:1020px)");
   const [contacts, setContacts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitForm, setIsSubmitForm] = useState(false);
+  const [alertMessage, setAlertMessage] = useState({
+    msg: "",
+    color: "",
+  });
   const getAllContacts = async () => {
     try {
       const response = await fetch("/api/contacts");
@@ -30,27 +35,28 @@ const ContactDashboard = () => {
     }
   };
   useEffect(() => {
+    console.log("useEffect");
     getAllContacts();
   }, []);
 
   const [contactData, setContactData] = useState({
-    firstName: "",
-    lastName: "",
+    firstname: "",
+    lastname: "",
     country: "",
     city: "",
     street: "",
-    zipCode: "",
+    zipcode: "",
     email: "",
     phone: "",
   });
 
   const [errors, setErrors] = useState({
-    firstName: "",
-    lastName: "",
+    firstname: "",
+    lastname: "",
     country: "",
     city: "",
     street: "",
-    zipCode: "",
+    zipcode: "",
     email: "",
     phone: "",
   });
@@ -59,15 +65,15 @@ const ContactDashboard = () => {
     const { name, value } = e.target;
     let error = "";
     if (
-      name === "firstName" ||
-      name === "lastName" ||
+      name === "firstname" ||
+      name === "lastname" ||
       name === "country" ||
       name === "city"
     ) {
       error = !validTextField(value) ? "Invalid text" : "";
     } else if (name === "phone") {
       error = !validPhoneNumber(value) ? "Invalid number" : "";
-    } else if (name === "zipCode") {
+    } else if (name === "zipcode") {
       error = !validZipCode(value) ? "Invalid zip code" : "";
     } else if (name === "email") {
       error = !validEmail(value) ? "Invalid email" : "";
@@ -76,7 +82,7 @@ const ContactDashboard = () => {
     }
     setContactData((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]: name === "zipCode" ? Number(value) : value,
     }));
 
     setErrors((prevErrors) => ({
@@ -97,20 +103,47 @@ const ContactDashboard = () => {
       setIsSubmitForm(true);
       try {
         const options = {
-          method: "DELETE",
+          method: "POST",
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            ...contactData,
-            zipcode: Number(contactData.zipCode),
-          }),
+          body: JSON.stringify(contactData),
         };
-        // const response = await fetch(`/api/create`, options);
-        console.log(contactData);
+        const response = await fetch("/api/create", options);
+        if (response.status !== 200) {
+          const errorResponse = await response.json();
+          setAlertMessage({
+            msg: `${errorResponse.errors[0].type}-EMAIL`,
+            color: "red",
+          });
+          throw new Error("Something went wrong");
+        }
+        setContacts([...contacts, contactData]);
+        setAlertMessage({
+          msg: "success",
+          color: "#2D7D32",
+        });
+        setContactData({
+          firstname: "",
+          lastname: "",
+          country: "",
+          city: "",
+          street: "",
+          zipcode: "",
+          email: "",
+          phone: "",
+        });
       } catch (error) {
         console.log("Error=>", error);
+      } finally {
+        setIsSubmitForm(false);
+        setTimeout(() => {
+          setAlertMessage({
+            msg: "",
+            color: "",
+          });
+        }, 5000);
       }
     }
   };
@@ -130,44 +163,63 @@ const ContactDashboard = () => {
       };
       const response = await fetch(`/api/delete/${id}`, options);
       if (response.status === 200) {
-        getAllContacts();
+        const data = await response.json();
+        setContacts(data);
+        setAlertMessage({
+          msg: "success",
+          color: "#2D7D32",
+        });
       }
     } catch (error) {
+      setAlertMessage({
+        msg: `${error}`,
+        color: "red",
+      });
       console.log("Error=>", error);
+    } finally {
+      setTimeout(() => {
+        setAlertMessage({
+          msg: "",
+          color: "",
+        });
+      }, 5000);
     }
   };
   return (
-    <ContactDashboardStyle>
-      <ContacDashboardCard mobile={mobile ? 1 : 0}>
-        <div className="dashboard_header">
-          {" "}
-          <h4>Create new contact</h4>
-          <Button
-            variant="contained"
-            className="export_csv"
-            onClick={handleClickExportToCSV}
-          >
-            Export to CSV
-          </Button>
-        </div>
-        <FormStyle>
-          <Form
-            isSubmitForm={isSubmitForm}
-            handleSubmitForm={handleSubmitForm}
-            contactData={contactData}
-            errors={errors}
-            handleInputChange={handleInputChange}
-          />
-        </FormStyle>
-        <TableStyle>
-          <ContactsTable
-            contacts={contacts}
-            isLoading={isLoading}
-            handleRemove={handleRemove}
-          />
-        </TableStyle>
-      </ContacDashboardCard>
-    </ContactDashboardStyle>
+    <>
+      <AlertMessage text={alertMessage.msg} color={alertMessage.color} />
+      <ContactDashboardStyle>
+        <ContacDashboardCard mobile={mobile ? 1 : 0}>
+          <div className="dashboard_header">
+            {" "}
+            <h4>Create new contact</h4>
+            <Button
+              variant="contained"
+              className="export_csv"
+              onClick={handleClickExportToCSV}
+            >
+              Export to CSV
+            </Button>
+          </div>
+          <FormStyle>
+            <Form
+              isSubmitForm={isSubmitForm}
+              handleSubmitForm={handleSubmitForm}
+              contactData={contactData}
+              errors={errors}
+              handleInputChange={handleInputChange}
+            />
+          </FormStyle>
+          <TableStyle>
+            <ContactsTable
+              contacts={contacts}
+              isLoading={isLoading}
+              handleRemove={handleRemove}
+            />
+          </TableStyle>
+        </ContacDashboardCard>
+      </ContactDashboardStyle>
+    </>
   );
 };
 
