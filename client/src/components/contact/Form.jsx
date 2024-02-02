@@ -13,6 +13,7 @@ const Form = ({
   handleInputChange,
   handleSubmitForm,
   isSubmitForm,
+  isEditContactToggle,
 }) => {
   const mobile = useMediaQuery("(max-width:1020px)");
   return (
@@ -39,15 +40,16 @@ const Form = ({
             <TextField
               label="Last Name"
               id="outlined-size-small"
-              value={contactData?.lastName}
+              value={contactData?.lastname}
+              variant="outlined"
               size="small"
               name="lastname"
+              onChange={handleInputChange}
+              helperText={errors?.lastname}
+              error={errors?.lastname ? true : false}
               InputLabelProps={{
                 style: { fontSize: "14px" },
               }}
-              onChange={handleInputChange}
-              helperText={errors?.lastName}
-              error={errors?.lastName ? true : false}
             />
           </Grid>
           <Grid item xs={mobile ? 6 : 2} md={4} lg={2}>
@@ -149,15 +151,19 @@ const Form = ({
               className="submit_form"
               variant="contained"
               size="large"
-              onClick={handleSubmitForm}
+              onClick={(e) =>
+                handleSubmitForm(e, isEditContactToggle ? "edit" : "submit")
+              }
               color="secondary"
             >
               {isSubmitForm ? (
                 <span style={{ marginLeft: "10px" }}>
                   <Spinner size={20} color={"white"} />
                 </span>
+              ) : isEditContactToggle ? (
+                "Edit Form"
               ) : (
-                "Submit Form"
+                " Submit Form"
               )}
             </Button>
           </Grid>

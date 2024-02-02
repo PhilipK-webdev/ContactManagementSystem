@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import Form from "./Form";
 import ContactsTable from "../contact/ContactsTable";
@@ -11,16 +11,18 @@ import {
   validStreet,
 } from "../../utils/index.js";
 import AlertMessage from "../shared/AlertMessage.jsx";
-
 const ContactDashboard = () => {
   const mobile = useMediaQuery("(max-width:1020px)");
   const [contacts, setContacts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitForm, setIsSubmitForm] = useState(false);
+  const [isEditContactToggle, setIsEditContactToggle] = useState(false);
+  const [toggleId, setToggleId] = useState("");
   const [alertMessage, setAlertMessage] = useState({
     msg: "",
     color: "",
   });
+
   const getAllContacts = async () => {
     try {
       const response = await fetch("/api/contacts");
@@ -35,7 +37,6 @@ const ContactDashboard = () => {
     }
   };
   useEffect(() => {
-    console.log("useEffect");
     getAllContacts();
   }, []);
 
@@ -91,8 +92,20 @@ const ContactDashboard = () => {
     }));
   };
 
-  const handleSubmitForm = async (e) => {
+  const handleSubmitForm = async (e, stage) => {
     e.preventDefault();
+    const options = {
+      method: stage === "edit" ? "PUT" : "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(
+        stage === "edit"
+          ? { ...contactData, id: Number(toggleId) }
+          : contactData
+      ),
+    };
     const formIsValid = Object.values(errors).every((error) => {
       return error === "";
     });
@@ -101,50 +114,72 @@ const ContactDashboard = () => {
     });
     if (formIsValid && !stateIsNotEmpty) {
       setIsSubmitForm(true);
-      try {
-        const options = {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(contactData),
-        };
-        const response = await fetch("/api/create", options);
-        if (response.status !== 200) {
-          const errorResponse = await response.json();
-          setAlertMessage({
-            msg: `${errorResponse.errors[0].type}-EMAIL`,
-            color: "red",
-          });
-          throw new Error("Something went wrong");
+      if (stage === "edit") {
+        let editable = true;
+        const filterContact = contacts.filter(
+          (contact) => contact.id === toggleId
+        );
+        for (const obj of filterContact) {
+          for (const key in contactData) {
+            if (obj[key] !== contactData[key]) {
+              editable = false;
+            }
+          }
         }
-        setContacts([...contacts, contactData]);
-        setAlertMessage({
-          msg: "success",
-          color: "#2D7D32",
-        });
-        setContactData({
-          firstname: "",
-          lastname: "",
-          country: "",
-          city: "",
-          street: "",
-          zipcode: "",
-          email: "",
-          phone: "",
-        });
-      } catch (error) {
-        console.log("Error=>", error);
-      } finally {
-        setIsSubmitForm(false);
-        setTimeout(() => {
+        if (editable) {
           setAlertMessage({
-            msg: "",
-            color: "",
+            msg: "No change",
+            color: "#2D7D32",
           });
-        }, 5000);
+          setIsSubmitForm(false);
+          setIsEditContactToggle(false);
+          setTimeout(() => {
+            setAlertMessage({
+              msg: "",
+              color: "",
+            });
+          }, 5000);
+        }
       }
+      // try {
+      //   const response = await fetch(
+      //     `/api/${stage === "edit" ? "edit" : "create"}`,
+      //     options
+      //   );
+      //   if (response.status !== 200) {
+      //     const errorResponse = await response.json();
+      //     setAlertMessage({
+      //       msg: `${errorResponse.errors[0].type}-EMAIL`,
+      //       color: "red",
+      //     });
+      //     throw new Error("Something went wrong");
+      //   }
+      //   setContacts([...contacts, contactData]);
+      //   setAlertMessage({
+      //     msg: "success",
+      //     color: "#2D7D32",
+      //   });
+      //   setContactData({
+      //     firstname: "",
+      //     lastname: "",
+      //     country: "",
+      //     city: "",
+      //     street: "",
+      //     zipcode: "",
+      //     email: "",
+      //     phone: "",
+      //   });
+      // } catch (error) {
+      //   console.log("Error=>", error);
+      // } finally {
+      //   setIsSubmitForm(false);
+      //   setTimeout(() => {
+      //     setAlertMessage({
+      //       msg: "",
+      //       color: "",
+      //     });
+      //   }, 5000);
+      // }
     }
   };
   const handleClickExportToCSV = () => {
@@ -185,6 +220,11 @@ const ContactDashboard = () => {
       }, 5000);
     }
   };
+
+  const onChangeToggle = (e, id) => {
+    setIsEditContactToggle(e.target.checked);
+    setToggleId(id);
+  };
   return (
     <>
       <AlertMessage text={alertMessage.msg} color={alertMessage.color} />
@@ -203,6 +243,7 @@ const ContactDashboard = () => {
           </div>
           <FormStyle>
             <Form
+              isEditContactToggle={isEditContactToggle}
               isSubmitForm={isSubmitForm}
               handleSubmitForm={handleSubmitForm}
               contactData={contactData}
@@ -212,6 +253,9 @@ const ContactDashboard = () => {
           </FormStyle>
           <TableStyle>
             <ContactsTable
+              isEditContactToggle={isEditContactToggle}
+              setContactData={setContactData}
+              onChangeToggle={onChangeToggle}
               contacts={contacts}
               isLoading={isLoading}
               handleRemove={handleRemove}

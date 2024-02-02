@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import {
   useTable,
   useRowSelect,
@@ -23,7 +23,14 @@ import RemoveContact from "./RemoveContact";
 import CustomPagination from "../shared/CustomPagination";
 import CustomTableCell from "../shared/CustomTableCell";
 
-const ContactsTable = ({ contacts, isLoading, handleRemove }) => {
+const ContactsTable = ({
+  contacts,
+  isLoading,
+  handleRemove,
+  onChangeToggle,
+  setContactData,
+  isEditContactToggle,
+}) => {
   const columns = useMemo(() => COLUMNS, []);
   const data = useMemo(() => {
     return contacts;
@@ -38,8 +45,10 @@ const ContactsTable = ({ contacts, isLoading, handleRemove }) => {
     canPreviousPage,
     pageOptions,
     state,
+    resetSelectedRows,
     gotoPage,
     selectedFlatRows,
+    getToggleAllRowsSelectedProps,
   } = useTable(
     {
       columns,
@@ -56,7 +65,18 @@ const ContactsTable = ({ contacts, isLoading, handleRemove }) => {
         {
           id: "selection",
           disableFilters: true,
-          Cell: ({ row }) => <Toggle {...row.getToggleRowSelectedProps()} />,
+          Cell: ({ row }) => {
+            const isIndeterminate =
+              !!getToggleAllRowsSelectedProps().indeterminate;
+            return (
+              <Toggle
+                {...row.getToggleRowSelectedProps()}
+                onChangeToggle={onChangeToggle}
+                id={row.cells[9].row.original.id}
+                isDisabled={isIndeterminate}
+              />
+            );
+          },
         },
 
         ...columns,
@@ -65,7 +85,6 @@ const ContactsTable = ({ contacts, isLoading, handleRemove }) => {
           disableFilters: true,
           disableSortBy: true,
           Cell: ({ row }) => {
-            console.log("id", row.cells[9].row.original.id);
             return (
               <RemoveContact
                 {...row.getToggleRowSelectedProps()}
@@ -79,6 +98,35 @@ const ContactsTable = ({ contacts, isLoading, handleRemove }) => {
     }
   );
   const { pageIndex } = state;
+
+  const _selectedFlatRows = useMemo(() => {
+    return selectedFlatRows;
+  }, [selectedFlatRows]);
+
+  useEffect(() => {
+    setContactData(
+      _selectedFlatRows.length > 0
+        ? _selectedFlatRows[0]?.values
+        : {
+            firstname: "",
+            lastname: "",
+            country: "",
+            city: "",
+            street: "",
+            zipcode: "",
+            email: "",
+            phone: "",
+          }
+    );
+  }, [setContactData, _selectedFlatRows]);
+  const handleResetSelectedRows = () => {
+    state.selectedRowIds = {};
+    state.selectedFlatRows = [];
+  };
+
+  if (!isEditContactToggle) {
+    handleResetSelectedRows();
+  }
   return isLoading ? (
     <div style={{ margin: "auto" }}>
       <Spinner size={60} color={"#265FA9"} />
