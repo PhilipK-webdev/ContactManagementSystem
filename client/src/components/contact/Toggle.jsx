@@ -2,7 +2,7 @@ import { useRef, useEffect, forwardRef } from "react";
 import { Tooltip, Switch, FormControlLabel, FormGroup } from "@mui/material";
 
 const Toggle = forwardRef(
-  ({ indeterminate, onChangeToggle, id, isDisabled, ...rest }, ref) => {
+  ({ indeterminate, onChangeToggle, id, isDisabled, row, ...rest }, ref) => {
     const defaultRef = useRef();
     const resolvedRef = ref || defaultRef;
 
@@ -20,7 +20,7 @@ const Toggle = forwardRef(
               <Tooltip title="Edit contact" placement="top">
                 <Switch
                   onChange={(e) => {
-                    onChangeToggle(e, id);
+                    onChangeToggle(e, id, row);
                     onChange(e);
                   }}
                   checked={checked}

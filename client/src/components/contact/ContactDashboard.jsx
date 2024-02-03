@@ -12,6 +12,7 @@ import {
 } from "../../utils/index.js";
 import AlertMessage from "../shared/AlertMessage.jsx";
 import { CSVLink } from "react-csv";
+import ModalMessage from "../shared/ModalMessage.jsx";
 
 const ContactDashboard = () => {
   const mobile = useMediaQuery("(max-width:1020px)");
@@ -24,21 +25,27 @@ const ContactDashboard = () => {
     msg: "",
     color: "",
   });
+  const [open, setOpen] = useState(false);
+  const [isSubmitModalOpen, setSubmitModalOpen] = useState(false);
 
-  const getAllContacts = async () => {
-    try {
-      const response = await fetch("/api/contacts");
-      if (response.status === 200) {
-        const data = await response.json();
-        setContacts(data);
+  useEffect(() => {
+    const getAllContacts = async () => {
+      try {
+        const response = await fetch("/api/contacts");
+        if (response.status === 200) {
+          const data = await response.json();
+          if (!data || data.length === 0) {
+            setOpen(true);
+          } else {
+            setContacts(data);
+            setIsLoading(false);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
         setIsLoading(false);
       }
-    } catch (error) {
-      console.error("Error fetching categories:", error);
-      setIsLoading(false);
-    }
-  };
-  useEffect(() => {
+    };
     getAllContacts();
   }, []);
 
@@ -96,6 +103,10 @@ const ContactDashboard = () => {
 
   const handleSubmitForm = async (e, stage) => {
     e.preventDefault();
+    let editable = true;
+    let editUser = {};
+    let editUserIndex = -1;
+    setSubmitModalOpen(true);
     const options = {
       method: stage === "edit" ? "PUT" : "POST",
       headers: {
@@ -114,10 +125,10 @@ const ContactDashboard = () => {
     const stateIsNotEmpty = Object.values(contactData).some((contact) => {
       return contact === "";
     });
+
     if (formIsValid && !stateIsNotEmpty) {
       setIsSubmitForm(true);
       if (stage === "edit") {
-        let editable = true;
         const filterContact = contacts.filter(
           (contact) => contact.id === toggleId
         );
@@ -141,51 +152,61 @@ const ContactDashboard = () => {
               color: "",
             });
           }, 5000);
+        } else {
+          editUser = { ...contactData };
+          editUserIndex = contacts.findIndex(
+            (contact) => contact.id === toggleId
+          );
         }
       }
-      // try {
-      //   const response = await fetch(
-      //     `/api/${stage === "edit" ? "edit" : "create"}`,
-      //     options
-      //   );
-      //   if (response.status !== 200) {
-      //     const errorResponse = await response.json();
-      //     setAlertMessage({
-      //       msg: `${errorResponse.errors[0].type}-EMAIL`,
-      //       color: "red",
-      //     });
-      //     throw new Error("Something went wrong");
-      //   }
-      //   setContacts([...contacts, contactData]);
-      //   setAlertMessage({
-      //     msg: "success",
-      //     color: "#2D7D32",
-      //   });
-      //   setContactData({
-      //     firstname: "",
-      //     lastname: "",
-      //     country: "",
-      //     city: "",
-      //     street: "",
-      //     zipcode: "",
-      //     email: "",
-      //     phone: "",
-      //   });
-      // } catch (error) {
-      //   console.log("Error=>", error);
-      // } finally {
-      //   setIsSubmitForm(false);
-      //   setTimeout(() => {
-      //     setAlertMessage({
-      //       msg: "",
-      //       color: "",
-      //     });
-      //   }, 5000);
-      // }
+      try {
+        const response = await fetch(
+          `/api/${stage === "edit" ? "edit" : "create"}`,
+          options
+        );
+        if (response.status !== 200) {
+          const errorResponse = await response.json();
+          setAlertMessage({
+            msg: `${errorResponse.errors[0].type}-EMAIL`,
+            color: "red",
+          });
+          throw new Error("Something went wrong");
+        }
+        if (!editUser) {
+          setIsSubmitForm(false);
+          setIsEditContactToggle(false);
+        }
+        const user = { ...editUser, id: contacts[editUserIndex].id };
+        contacts[editUserIndex] = { ...user };
+        setContacts(
+          stage === "edit" ? [...contacts] : [...contacts, contactData]
+        );
+        setAlertMessage({
+          msg: "success",
+          color: "#2D7D32",
+        });
+        setContactData({
+          firstname: "",
+          lastname: "",
+          country: "",
+          city: "",
+          street: "",
+          zipcode: "",
+          email: "",
+          phone: "",
+        });
+      } catch (error) {
+        console.log("Error=>", error);
+      } finally {
+        setIsSubmitForm(false);
+        setTimeout(() => {
+          setAlertMessage({
+            msg: "",
+            color: "",
+          });
+        }, 5000);
+      }
     }
-  };
-  const handleClickExportToCSV = () => {
-    console.log("Export to CSV");
   };
 
   const handleRemove = async (id) => {
@@ -222,11 +243,31 @@ const ContactDashboard = () => {
     }
   };
 
-  const onChangeToggle = (e, id) => {
+  const onChangeToggle = (e, id, row) => {
     setIsEditContactToggle(e.target.checked);
     setToggleId(id);
+    setContactData(
+      Object.keys(row.values).length > 0 && e.target.checked
+        ? row?.values
+        : {
+            firstname: "",
+            lastname: "",
+            country: "",
+            city: "",
+            street: "",
+            zipcode: "",
+            email: "",
+            phone: "",
+          }
+    );
   };
 
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const handleCloseModal = () => setSubmitModalOpen(false);
+  const submitFormBtn = (e, answer) => {
+    handleCloseModal(false);
+  };
   const csvData = [
     [
       "First Name",
@@ -259,11 +300,7 @@ const ContactDashboard = () => {
           <div className="dashboard_header">
             {" "}
             <h4>Create new contact</h4>
-            <Button
-              variant="contained"
-              className="export_csv"
-              onClick={handleClickExportToCSV}
-            >
+            <Button variant="contained" className="export_csv">
               <CSVLink
                 className="downloadbtn"
                 filename="claims- conference.csv"
@@ -283,18 +320,37 @@ const ContactDashboard = () => {
               handleInputChange={handleInputChange}
             />
           </FormStyle>
-          <TableStyle>
-            <ContactsTable
-              isEditContactToggle={isEditContactToggle}
-              setContactData={setContactData}
-              onChangeToggle={onChangeToggle}
-              contacts={contacts}
-              isLoading={isLoading}
-              handleRemove={handleRemove}
+
+          {open ? (
+            <ModalMessage
+              open={open}
+              handleClose={handleClose}
+              handleOpen={handleOpen}
             />
-          </TableStyle>
+          ) : (
+            <TableStyle>
+              <ContactsTable
+                isEditContactToggle={isEditContactToggle}
+                onChangeToggle={onChangeToggle}
+                contacts={contacts}
+                isLoading={isLoading}
+                handleRemove={handleRemove}
+              />
+            </TableStyle>
+          )}
         </ContacDashboardCard>
       </ContactDashboardStyle>
+      {isSubmitModalOpen && (
+        <ModalMessage
+          open={isSubmitModalOpen}
+          handleClose={handleCloseModal}
+          submitFormBtn={submitFormBtn}
+          flag={true}
+          message={
+            "Are you sure you want to submit/edit the form?\n To submit press Y otherwise N or click somewhere on the screen"
+          }
+        />
+      )}
     </>
   );
 };

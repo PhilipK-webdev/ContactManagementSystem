@@ -28,7 +28,6 @@ const ContactsTable = ({
   isLoading,
   handleRemove,
   onChangeToggle,
-  setContactData,
   isEditContactToggle,
 }) => {
   const columns = useMemo(() => COLUMNS, []);
@@ -46,7 +45,6 @@ const ContactsTable = ({
     pageOptions,
     state,
     gotoPage,
-    selectedFlatRows,
     getToggleAllRowsSelectedProps,
   } = useTable(
     {
@@ -71,6 +69,7 @@ const ContactsTable = ({
               <Toggle
                 {...row.getToggleRowSelectedProps()}
                 onChangeToggle={onChangeToggle}
+                row={row}
                 id={row.cells[9].row.original.id}
                 isDisabled={isIndeterminate}
               />
@@ -97,27 +96,6 @@ const ContactsTable = ({
     }
   );
   const { pageIndex } = state;
-
-  const _selectedFlatRows = useMemo(() => {
-    return selectedFlatRows;
-  }, [selectedFlatRows]);
-
-  useEffect(() => {
-    setContactData(
-      _selectedFlatRows.length > 0
-        ? _selectedFlatRows[0]?.values
-        : {
-            firstname: "",
-            lastname: "",
-            country: "",
-            city: "",
-            street: "",
-            zipcode: "",
-            email: "",
-            phone: "",
-          }
-    );
-  }, [setContactData, _selectedFlatRows]);
   const handleResetSelectedRows = () => {
     state.selectedRowIds = {};
     state.selectedFlatRows = [];
