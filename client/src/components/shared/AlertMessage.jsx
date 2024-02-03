@@ -1,6 +1,6 @@
 const AlertMessage = ({ text, color }) => {
   return (
-    <div style={{ position: "relative" }}>
+    <div style={{ position: "relative", marginBottom: "10px" }}>
       <div
         className="alert"
         style={{

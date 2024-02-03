@@ -32,8 +32,10 @@ module.exports = (sequelize: any, DataTypes: any) => {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-          isAlpha: {
-            msg: "First name should only contain letters.",
+          isOnlyLetters(value: string) {
+            if (!/^[A-Za-z ]+$/.test(value)) {
+              throw new Error("First name should only contain letters.");
+            }
           },
         },
       },
@@ -41,8 +43,12 @@ module.exports = (sequelize: any, DataTypes: any) => {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-          isAlpha: {
-            msg: "Last name should only contain letters.",
+          isOnlyLetters(value: string) {
+            if (!/^[A-Za-z ]+$/.test(value)) {
+              throw new Error(
+                "Last name should only contain letters and spaces."
+              );
+            }
           },
         },
       },

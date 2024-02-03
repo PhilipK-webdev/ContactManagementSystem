@@ -1,25 +1,24 @@
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import Modal from "@mui/material/Modal";
+import { Button, Typography, Modal, Box } from "@mui/material";
 import styled from "styled-components";
 const style = {
   position: "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
+  width: 450,
+  height: 225,
+  bgcolor: "#424242",
   boxShadow: 24,
   p: 4,
+  borderRadius: "10px",
+  color: "white",
 };
 const ModalMessage = ({
   handleClose,
   submitFormBtn,
   flag = false,
   open,
-  message = "Please create new contact, you see me when no contacts in thesystem.✌️",
+  message = "Please create new contact for the first time✌️",
 }) => {
   return (
     <Modal
@@ -29,16 +28,42 @@ const ModalMessage = ({
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
-        <Typography id="modal-modal-title" variant="h6" component="h2">
+        <Typography
+          id="modal-modal-title"
+          variant="h6"
+          component="h2"
+          style={{
+            borderBottom: "2px solid ",
+            borderBottomColor: "white",
+            width: "fit-content",
+          }}
+        >
           Contact Management System
         </Typography>
-        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+        <Typography
+          id="modal-modal-description"
+          style={{ lineHeight: "30px", marginBottom: "67px" }}
+          sx={{ mt: 2 }}
+          variant="inherit"
+        >
           {message}
         </Typography>
         {flag && (
           <ButtonContainer>
-            <Button onClick={(e) => submitFormBtn(e, "Yes")}>Yes</Button>
-            <Button onClick={(e) => submitFormBtn(e, "No")}>No</Button>
+            <Button
+              variant="contained"
+              onClick={(e) => submitFormBtn(e, "yes")}
+              color="primary"
+            >
+              Yes
+            </Button>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={(e) => submitFormBtn(e, "no")}
+            >
+              No
+            </Button>
           </ButtonContainer>
         )}
       </Box>
@@ -48,7 +73,7 @@ const ModalMessage = ({
 
 const ButtonContainer = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
   margin-top: 10px;
 `;
 export default ModalMessage;

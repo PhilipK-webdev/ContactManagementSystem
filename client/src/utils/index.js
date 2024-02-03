@@ -24,3 +24,30 @@ export const validPhoneNumber = (str) => {
   const phoneRegex = /^\d+$/;
   return phoneRegex.test(str);
 };
+
+export const csvData = (contacts) => {
+  return [
+    [
+      "First Name",
+      "Last Name",
+      "Country",
+      "City",
+      "Street",
+      "Zip Code",
+      "Phone Number",
+      "Email",
+    ],
+    ...contacts.map(
+      ({
+        firstname,
+        lastname,
+        country,
+        city,
+        street,
+        zipcode,
+        phone,
+        email,
+      }) => [firstname, lastname, country, city, street, zipcode, phone, email]
+    ),
+  ];
+};

@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import db from "../models";
 import { Params } from "express-serve-static-core";
+import getAllContacts from "./routes.repository";
 const router = express.Router();
 interface TypedRequestBody<T> extends Express.Request {
   body: T;
@@ -8,10 +9,11 @@ interface TypedRequestBody<T> extends Express.Request {
 interface TypedRequestParams<T extends Params> extends Express.Request {
   params: T;
 }
+
 router.get("/contacts", async (req: Request, res: Response) => {
   try {
-    const contacts = await db.User.findAll();
-    res.json(contacts);
+    const data = await getAllContacts();
+    res.json(data);
   } catch (error) {
     console.error("GET route - Error:", error);
     res.status(500).send("Internal Server Error");
@@ -56,7 +58,8 @@ router.post(
         email,
       });
 
-      res.sendStatus(200);
+      const data = await getAllContacts();
+      res.json(data);
     } catch (error) {
       console.error("CREATE route - Error:", error);
       res.status(500).json(error);
@@ -74,7 +77,7 @@ router.put(
   ) => {
     try {
       const { id, ...data } = req.body;
-      const contacts = await db.User.findAll();
+      const contacts = await getAllContacts();
       const contactExists = contacts.some(
         (contact: { id: string }) => contact.id === id
       );
@@ -91,8 +94,8 @@ router.put(
           },
         }
       );
-
-      res.sendStatus(200);
+      const _data = await getAllContacts();
+      res.json(_data);
     } catch (error) {
       console.error("EDIT route - Error:", error);
       res.status(500).send("Internal Server Error");

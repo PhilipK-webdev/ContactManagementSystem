@@ -87,6 +87,7 @@ const ContactsTable = ({
               <RemoveContact
                 {...row.getToggleRowSelectedProps()}
                 handleRemove={handleRemove}
+                row={row}
                 id={row.cells[9].row.original.id}
               />
             );
@@ -104,57 +105,58 @@ const ContactsTable = ({
   if (!isEditContactToggle) {
     handleResetSelectedRows();
   }
-
   return isLoading ? (
     <div style={{ margin: "auto" }}>
       <Spinner size={60} color={"#265FA9"} />
     </div>
   ) : (
-    <LayoutTable>
-      <TableContainer component={Paper}>
-        <Table
-          {...getTableProps()}
-          sx={{
-            "& .MuiTableRow-root:hover": {
-              backgroundColor: "#DFE1EA",
-            },
-          }}
-        >
-          <TableHead>
-            {headerGroups.map((headerGroup) => (
-              <TableRow {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column) => (
-                  <TableCell key={column.id}>
-                    <CustomTableCell column={column} />
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableHead>
-          <TableBody {...getTableBodyProps()}>
-            {page.map((row) => {
-              prepareRow(row);
-              return (
-                <TableRow {...row.getRowProps()}>
-                  {row.cells.map((cell) => (
-                    <TableCell {...cell.getCellProps()}>
-                      {cell.render("Cell")}
+    data && data.length > 0 && (
+      <LayoutTable>
+        <TableContainer component={Paper}>
+          <Table
+            {...getTableProps()}
+            sx={{
+              "& .MuiTableRow-root:hover": {
+                backgroundColor: "#DFE1EA",
+              },
+            }}
+          >
+            <TableHead>
+              {headerGroups.map((headerGroup) => (
+                <TableRow {...headerGroup.getHeaderGroupProps()}>
+                  {headerGroup.headers.map((column) => (
+                    <TableCell key={column.id}>
+                      <CustomTableCell column={column} />
                     </TableCell>
                   ))}
                 </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <CustomPagination
-        pageIndex={pageIndex}
-        pageOptions={pageOptions}
-        gotoPage={gotoPage}
-        canNextPage={canNextPage}
-        canPreviousPage={canPreviousPage}
-      />
-    </LayoutTable>
+              ))}
+            </TableHead>
+            <TableBody {...getTableBodyProps()}>
+              {page.map((row) => {
+                prepareRow(row);
+                return (
+                  <TableRow {...row.getRowProps()}>
+                    {row.cells.map((cell) => (
+                      <TableCell {...cell.getCellProps()}>
+                        {cell.render("Cell")}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <CustomPagination
+          pageIndex={pageIndex}
+          pageOptions={pageOptions}
+          gotoPage={gotoPage}
+          canNextPage={canNextPage}
+          canPreviousPage={canPreviousPage}
+        />
+      </LayoutTable>
+    )
   );
 };
 

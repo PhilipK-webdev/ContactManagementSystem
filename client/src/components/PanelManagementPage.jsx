@@ -1,5 +1,4 @@
 import Header from "./header/Header";
-import Footer from "./footer/Footer";
 import ContactDashboard from "./contact/ContactDashboard";
 
 export const PanelManagementPage = () => {
@@ -7,7 +6,6 @@ export const PanelManagementPage = () => {
     <>
       <Header />
       <ContactDashboard />
-      {/* <Footer /> */}
     </>
   );
 };
