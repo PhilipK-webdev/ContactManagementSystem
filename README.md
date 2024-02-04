@@ -7,7 +7,8 @@
 ![](https://badges.aleen42.com/src/vitejs.svg)
 
 </div>
-# Introduction: Contact Management System
+
+## Introduction: Contact Management System
 
 Welcome to the Contact Management System! This project provides a simple and efficient solution for managing your contacts, offering a RESTful API built with Node.js and Express, as well as a user-friendly React interface.
 
