@@ -1,6 +1,6 @@
 import express from "express";
 import db from "./models";
-import api from "./api/routes";
+import api from "./api/routes.service";
 const app = express();
 const PORT = process.env.PORT || 5000;
 
