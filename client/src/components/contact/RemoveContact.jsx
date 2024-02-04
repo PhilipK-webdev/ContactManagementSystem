@@ -7,7 +7,6 @@ const RemoveContact = (props) => {
         className="delete_icon"
         style={props.style}
         onClick={() => {
-          console.log("row", props.row);
           props.handleRemove(props.id);
         }}
       />
