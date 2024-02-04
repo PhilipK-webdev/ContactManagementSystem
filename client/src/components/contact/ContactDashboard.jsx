@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import styled from "styled-components";
 import Form from "./Form";
 import ContactsTable from "../contact/ContactsTable";
-import { useMediaQuery, Button } from "@mui/material";
+import { useMediaQuery, Button, Tooltip } from "@mui/material";
 import {
   validEmail,
   validTextField,
@@ -16,6 +16,7 @@ import { CSVLink } from "react-csv";
 import ModalMessage from "../shared/ModalMessage.jsx";
 
 const ContactDashboard = () => {
+  // Declaration
   const mobile = useMediaQuery("(max-width:1020px)");
   const [contacts, setContacts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -29,24 +30,6 @@ const ContactDashboard = () => {
   const [open, setOpen] = useState(false);
   const [isSubmitModalOpen, setSubmitModalOpen] = useState(false);
   const [stage, setStage] = useState("");
-
-  useEffect(() => {
-    const getAllContacts = async () => {
-      try {
-        const response = await fetch("/api/contacts");
-        if (response.status === 200) {
-          const data = await response.json();
-          !data || data.length === 0 ? setOpen(true) : setContacts(data);
-          setIsLoading(false);
-        }
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-        setIsLoading(false);
-      }
-    };
-    getAllContacts();
-  }, []);
-
   const [contactData, setContactData] = useState({
     firstname: "",
     lastname: "",
@@ -68,6 +51,23 @@ const ContactDashboard = () => {
     email: "",
     phone: "",
   });
+
+  useEffect(() => {
+    const getAllContacts = async () => {
+      try {
+        const response = await fetch("/api/contacts");
+        if (response.status === 200) {
+          const data = await response.json();
+          !data || data.length === 0 ? setOpen(true) : setContacts(data);
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+        setIsLoading(false);
+      }
+    };
+    getAllContacts();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -227,8 +227,9 @@ const ContactDashboard = () => {
         );
         if (response.status !== 200) {
           const errorResponse = await response.json();
+          console.log("error", errorResponse);
           setAlertMessage({
-            msg: `${errorResponse.errors[0].type}-EMAIL`,
+            msg: `${errorResponse.errors[0].type}-${errorResponse.errors[0].path}`,
             color: "red",
           });
           throw new Error("Something went wrong");
@@ -286,15 +287,17 @@ const ContactDashboard = () => {
           <div className="dashboard_header">
             {" "}
             <h4>Create new contact</h4>
-            <Button variant="contained" className="export_csv">
-              <CSVLink
-                className="downloadbtn"
-                filename="claims-conference.csv"
-                data={csvData(contacts)}
-              >
-                Export to CSV
-              </CSVLink>
-            </Button>
+            <Tooltip title="Download CSV file" placement="top">
+              <Button variant="contained" className="export_csv">
+                <CSVLink
+                  className="downloadbtn"
+                  filename="claims-conference.csv"
+                  data={csvData(contacts)}
+                >
+                  Export to CSV
+                </CSVLink>
+              </Button>
+            </Tooltip>
           </div>
           <FormStyle>
             <Form

@@ -1,6 +1,7 @@
 import * as dotenv from "dotenv";
 dotenv.config();
 
+// configuration file
 interface DBConfig {
   username: string;
   password: string;

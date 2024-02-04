@@ -17,7 +17,10 @@ const Toggle = forwardRef(
           <FormControlLabel
             className="toggle"
             control={
-              <Tooltip title="Edit contact" placement="top">
+              <Tooltip
+                title={`Edit contact ${checked ? "off" : "on"}`}
+                placement="top"
+              >
                 <Switch
                   onChange={(e) => {
                     onChangeToggle(e, id, row);

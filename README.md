@@ -1,7 +1,12 @@
+<div align="center">
+<img src="./client/src/assets/project.png" alt="logo"/>
+<h1> Contact Management System</h1>
+
 ![](https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=react&logoColor=black)
 ![](https://img.shields.io/badge/Typescript-3178C6?style=flat-square&logo=typescript&logoColor=white)
 ![](https://badges.aleen42.com/src/vitejs.svg)
 
+</div>
 # Introduction: Contact Management System
 
 Welcome to the Contact Management System! This project provides a simple and efficient solution for managing your contacts, offering a RESTful API built with Node.js and Express, as well as a user-friendly React interface.

@@ -10,6 +10,8 @@ interface TypedRequestParams<T extends Params> extends Express.Request {
   params: T;
 }
 
+// CRUD Operations
+
 router.get("/contacts", async (req: Request, res: Response) => {
   try {
     const data = await getAllContacts();

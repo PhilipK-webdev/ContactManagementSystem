@@ -1,8 +1,8 @@
 import DeleteIcon from "@mui/icons-material/Delete";
-import { IconButton, Tooltip } from "@mui/material";
+import { Tooltip } from "@mui/material";
 const RemoveContact = (props) => {
   return (
-    <Tooltip title="Delete" placement="top">
+    <Tooltip title="Delete user" placement="top">
       <DeleteIcon
         className="delete_icon"
         style={props.style}

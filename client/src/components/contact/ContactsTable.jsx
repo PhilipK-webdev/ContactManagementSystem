@@ -1,12 +1,3 @@
-import { useEffect, useMemo } from "react";
-import {
-  useTable,
-  useRowSelect,
-  usePagination,
-  useFilters,
-  useSortBy,
-} from "react-table";
-import { COLUMNS } from "../shared/columns";
 import {
   Table,
   TableBody,
@@ -16,12 +7,11 @@ import {
   TableRow,
   Paper,
 } from "@mui/material";
-import Toggle from "./Toggle";
 import styled from "styled-components";
 import Spinner from "../shared/Spinner";
-import RemoveContact from "./RemoveContact";
 import CustomPagination from "../shared/CustomPagination";
 import CustomTableCell from "../shared/CustomTableCell";
+import useTableCustom from "../../hooks/useTableCustom.jsx";
 
 const ContactsTable = ({
   contacts,
@@ -30,10 +20,6 @@ const ContactsTable = ({
   onChangeToggle,
   isEditContactToggle,
 }) => {
-  const columns = useMemo(() => COLUMNS, []);
-  const data = useMemo(() => {
-    return contacts;
-  }, [contacts]);
   const {
     getTableProps,
     getTableBodyProps,
@@ -45,57 +31,12 @@ const ContactsTable = ({
     pageOptions,
     state,
     gotoPage,
-    getToggleAllRowsSelectedProps,
-  } = useTable(
-    {
-      columns,
-      data,
-      initialState: { pageSize: 5 },
-    },
+  } = useTableCustom({
+    contacts,
+    onChangeToggle,
+    handleRemove,
+  });
 
-    useFilters,
-    useSortBy,
-    usePagination,
-    useRowSelect,
-    (hooks) => {
-      hooks.visibleColumns.push((columns) => [
-        {
-          id: "selection",
-          disableFilters: true,
-          Cell: ({ row }) => {
-            const isIndeterminate =
-              !!getToggleAllRowsSelectedProps().indeterminate;
-            return (
-              <Toggle
-                {...row.getToggleRowSelectedProps()}
-                onChangeToggle={onChangeToggle}
-                row={row}
-                id={row.cells[9].row.original.id}
-                isDisabled={isIndeterminate}
-              />
-            );
-          },
-        },
-
-        ...columns,
-        {
-          id: "selection2",
-          disableFilters: true,
-          disableSortBy: true,
-          Cell: ({ row }) => {
-            return (
-              <RemoveContact
-                {...row.getToggleRowSelectedProps()}
-                handleRemove={handleRemove}
-                row={row}
-                id={row.cells[9].row.original.id}
-              />
-            );
-          },
-        },
-      ]);
-    }
-  );
   const { pageIndex } = state;
   const handleResetSelectedRows = () => {
     state.selectedRowIds = {};
@@ -110,7 +51,7 @@ const ContactsTable = ({
       <Spinner size={60} color={"#265FA9"} />
     </div>
   ) : (
-    data && data.length > 0 && (
+    contacts && contacts.length > 0 && (
       <LayoutTable>
         <TableContainer component={Paper}>
           <Table

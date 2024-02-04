@@ -56,8 +56,12 @@ module.exports = (sequelize: any, DataTypes: any) => {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-          isAlpha: {
-            msg: "Country should only contain letters.",
+          isOnlyLetters(value: string) {
+            if (!/^[A-Za-z ]+$/.test(value)) {
+              throw new Error(
+                "Country should only contain letters and spaces."
+              );
+            }
           },
         },
       },
